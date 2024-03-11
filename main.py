@@ -1,27 +1,33 @@
+from pathlib import Path
+from PIL import Image
+
 import streamlit as st
 import torchvision.transforms.functional as TF
 from torchvision.datasets import CIFAR100
 from torch.utils.data import random_split
 import torch
 
-# Assuming CIFAR100 is already downloaded and available
-cifar100 = CIFAR100(root='~/data', train=True, download=True)
 
-# Splitting CIFAR100 into three subsets
-lengths = [int(len(cifar100) * 0.3), int(len(cifar100) * 0.3), len(cifar100) - 2 * int(len(cifar100) * 0.3)]
-a, b, c = random_split(cifar100, lengths)
+data_dir = Path('/Users/misha/data')  # Change this to the directory where you store the data
 
-# Function to convert a PyTorch tensor to a PIL image
-def get_image_from_dataset(dataset, idx):
-    img, label = dataset[idx]
-    if isinstance(img, torch.Tensor):
-        img = TF.to_pil_image(img)
-    return img, label
+demo_images_dir = data_dir / 'demo_images'
+all_bboxes = demo_images_dir / 'all_bboxes'
+suspect_bboxes = demo_images_dir / 'suspect_bboxes'
+relabeled_bboxes = demo_images_dir / 'relabeled_bboxes'
+
+all_images_names = [f.name for f in all_bboxes.iterdir()]
+
+@st.cache_data
+def get_image_from_folder(folder_path, image_name):
+    img = Image.open(folder_path / image_name)
+    return img, image_name
 
 # Pagination settings
 images_per_page = 4
-total_images = max(len(a), len(b), len(c))  # Assuming you want to base pagination on the largest subset
+total_images = len(all_images_names)  # Assuming you want to base pagination on the largest subset
 total_pages = (total_images + images_per_page - 1) // images_per_page  # Calculate the total number of pages
+
+st.title('BDD100K Mislabels: Found by Hirundo')
 
 # Initialize or update the current page in the session state
 if 'current_page' not in st.session_state:
@@ -31,23 +37,33 @@ if 'current_page' not in st.session_state:
 start_index = st.session_state.current_page * images_per_page
 end_index = start_index + images_per_page
 
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.text('Original: All Bboxes')
+
+with col2:
+    st.text('Suspect Bboxes')
+
+with col3:
+    st.text('Relabeled Bboxes')
+
 for i in range(start_index, min(end_index, total_images)):
     col1, col2, col3 = st.columns(3)
+
+    img_name = all_images_names[i]
     
-    if i < len(a):
-        img_a, label_a = get_image_from_dataset(a, i)
-        with col1:
-            st.image(img_a, caption=f"Label: {a.dataset.classes[label_a]}", use_column_width=True)
-    
-    if i < len(b):
-        img_b, label_b = get_image_from_dataset(b, i)
-        with col2:
-            st.image(img_b, caption=f"Label: {b.dataset.classes[label_b]}", use_column_width=True)
-    
-    if i < len(c):
-        img_c, label_c = get_image_from_dataset(c, i)
-        with col3:
-            st.image(img_c, caption=f"Label: {c.dataset.classes[label_c]}", use_column_width=True)
+    img_all, label_all = get_image_from_folder(all_bboxes, img_name)
+    with col1:
+        st.image(img_all, caption=f"Label: {label_all}", use_column_width=True)
+
+    img_suspects, label_suspects = get_image_from_folder(suspect_bboxes, img_name)
+    with col2:
+        st.image(img_suspects, caption=f"Label: {label_suspects}", use_column_width=True)
+
+    img_relabeled, label_relabeled = get_image_from_folder(relabeled_bboxes, img_name)
+    with col3:
+        st.image(img_relabeled, caption=f"Label: {label_relabeled}", use_column_width=True)
 
 # Centered navigation buttons with conditional disabling
 _, col_prev, col_next, _ = st.columns([2,1,1,2])
