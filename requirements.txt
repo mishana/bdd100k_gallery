@@ -1,4 +1,3 @@
-torch
-torchvision
 streamlit
-notebook
+pandas
+datasets
