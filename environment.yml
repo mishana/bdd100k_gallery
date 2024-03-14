@@ -8,3 +8,6 @@ channels:
 
 dependencies:
   - python=3.10
+  - datasets
+  - pandas
+  - streamlit
