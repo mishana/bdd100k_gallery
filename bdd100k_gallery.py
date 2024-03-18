@@ -109,7 +109,7 @@ for i in range(start_index, min(end_index, total_images)):
         # st.image(img_relabeled, use_column_width=True, caption=" ")
 
 # Centered navigation buttons with conditional disabling
-_, col_prev, col_page_num, col_next, _ = st.columns([2,1,1,1,2], gap='large')
+_, col_prev, col_page_num, col_next, _ = st.columns([2,1,2,1,2], gap='large')
 
 # with col_prev:
 #     st.button('Previous', disabled=prev_disabled(), key='prev', on_click=decrement_page)
