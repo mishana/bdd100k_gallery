@@ -109,7 +109,7 @@ for i in range(start_index, min(end_index, total_images)):
         # st.image(img_relabeled, use_column_width=True, caption=" ")
 
 # Centered navigation buttons with conditional disabling
-_, col_prev, col_page_num, col_next, _ = st.columns([2,1,2,1,2], gap='large')
+_, col_page_num, _ = st.columns(3, gap='large')
 
 # with col_prev:
 #     st.button('Previous', disabled=prev_disabled(), key='prev', on_click=decrement_page)
@@ -125,6 +125,6 @@ _, col_prev, col_page_num, col_next, _ = st.columns([2,1,2,1,2], gap='large')
 #         label2="Automatically Relabeled Bboxes",
 #     )
 
-with col2:
+with col_page_num:
     num = st.number_input(label="Enter page num:", on_change=enter_page_num, value=1, step=1, label_visibility='visible', min_value=1, max_value=total_pages, key='page_num')
 
