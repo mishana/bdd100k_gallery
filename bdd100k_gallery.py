@@ -3,6 +3,8 @@ import pandas as pd
 import streamlit as st
 from streamlit_image_comparison import image_comparison
 
+st.set_page_config(layout="wide")
+
 st.markdown(
     """
     <style>
@@ -15,9 +17,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-st.set_page_config(layout="wide")
-
 
 images_ext = 'webp'
 
