@@ -57,7 +57,7 @@ def get_image_from_folder(data_subset, image_name):
     return img, image_name
 
 # Pagination settings
-images_per_page = 2
+images_per_page = 1
 total_images = len(get_all_filtered_images_names())  # Assuming you want to base pagination on the largest subset
 total_pages = (total_images + images_per_page - 1) // images_per_page  # Calculate the total number of pages
 
