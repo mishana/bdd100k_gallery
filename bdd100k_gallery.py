@@ -125,6 +125,6 @@ _, col_prev, col_page_num, col_next, _ = st.columns([2,1,2,1,2], gap='large')
 #         label2="Automatically Relabeled Bboxes",
 #     )
 
-with col_page_num:
+with col2:
     num = st.number_input(label="Enter page num:", on_change=enter_page_num, value=1, step=1, label_visibility='visible', min_value=1, max_value=total_pages, key='page_num')
 
